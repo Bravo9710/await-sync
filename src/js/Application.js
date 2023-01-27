@@ -12,18 +12,25 @@ export default class Application extends EventEmitter {
     super();
 
     this.url = url;
-    this._load(this.url);
-    this.emit(Application.events.READY);
-  }
 
-  _loading() {
     const progress = document.createElement("progress");
     progress.classList.add('progress', 'is-small', 'is-primary');
     progress.max = 100;
     progress.innerHTML = 0;
 
-    return progress;
+    this._loading = progress;
+    this._load(this.url);
+    this.emit(Application.events.READY);
   }
+
+  // // _loading() {
+  //   const progress = document.createElement("progress");
+  //   progress.classList.add('progress', 'is-small', 'is-primary');
+  //   progress.max = 100;
+  //   progress.innerHTML = 0;
+
+  //   return progress;
+  // }
 
   _create(data) {
     data.results.forEach((planet) => {
@@ -39,7 +46,7 @@ export default class Application extends EventEmitter {
   }
 
   _startLoading () {
-    const progressBar = this._loading();
+    const progressBar = this._loading;
     document.body.querySelector(".main").appendChild(progressBar);
   }
 
@@ -50,14 +57,18 @@ export default class Application extends EventEmitter {
    async _load(url) {
     this._startLoading();
 
-    return new Promise((resolve, reject) => {
-      resolve(fetch(url));
-    }).then((data) => {
-      data.json().then(data => {
-        this._stopLoading();
-        this._create(data);
-      })
-    })
+    const response = await fetch(url);
+    const data = await response.json();
+
+    this._stopLoading();
+    this._create(data);
+
+    // return new Promise((resolve, reject) => {
+    //   resolve(fetch(url));
+    // }).then((data) => {
+    //   data.json().then(data => {
+    //   })
+    // })
   }
 
   _render({ name, terrain, population }) {
