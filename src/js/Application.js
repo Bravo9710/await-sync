@@ -33,7 +33,7 @@ export default class Application extends EventEmitter {
   // }
 
   _create(data) {
-    data.results.forEach((planet) => {
+    data.forEach((planet) => {
       const box = document.createElement("div");
       box.classList.add("box");
       box.innerHTML = this._render({
@@ -57,11 +57,21 @@ export default class Application extends EventEmitter {
    async _load(url) {
     this._startLoading();
 
-    const response = await fetch(url);
-    const data = await response.json();
+    let planets = [];
+    let next = url;
+    while (next) {
+      const response = await fetch(next);
+      const data = await response.json();
+      planets = [...planets, ...data.results];
+      next = data.next;
+    }
+    // this.renderBoxes(planets);
+
+    // const response = await fetch(url);
+    // const data = await response.json();
 
     this._stopLoading();
-    this._create(data);
+    this._create(planets);
 
     // return new Promise((resolve, reject) => {
     //   resolve(fetch(url));
