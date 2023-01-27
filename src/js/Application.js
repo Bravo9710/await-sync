@@ -24,15 +24,6 @@ export default class Application extends EventEmitter {
     this.emit(Application.events.READY);
   }
 
-  // // _loading() {
-  //   const progress = document.createElement("progress");
-  //   progress.classList.add('progress', 'is-small', 'is-primary');
-  //   progress.max = 100;
-  //   progress.innerHTML = 0;
-
-  //   return progress;
-  // }
-
   _create(data) {
     data.forEach((planet) => {
       const box = document.createElement("div");
@@ -66,20 +57,9 @@ export default class Application extends EventEmitter {
       planets = [...planets, ...data.results];
       next = data.next;
     }
-    // this.renderBoxes(planets);
-
-    // const response = await fetch(url);
-    // const data = await response.json();
 
     this._stopLoading();
     this._create(planets);
-
-    // return new Promise((resolve, reject) => {
-    //   resolve(fetch(url));
-    // }).then((data) => {
-    //   data.json().then(data => {
-    //   })
-    // })
   }
 
   _render({ name, terrain, population }) {

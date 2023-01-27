@@ -6,6 +6,5 @@ window.addEventListener("DOMContentLoaded", () => {
   const url = 'https://swapi.boom.dev/api/planets';
   const app = new Application(url);
   // Used to access the app instance by the automated tests
-  // app._load();
   window.__JS_APP = app;
 });
