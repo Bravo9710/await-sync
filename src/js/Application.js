@@ -8,40 +8,80 @@ export default class Application extends EventEmitter {
     };
   }
 
-  constructor() {
+  constructor(url) {
     super();
 
-    const box = document.createElement("div");
-    box.classList.add("box");
-    box.innerHTML = this._render({
-      name: "Placeholder",
-      terrain: "placeholder",
-      population: 0,
-    });
-
-    document.body.querySelector(".main").appendChild(box);
-
+    this.url = url;
+    this._load(this.url);
     this.emit(Application.events.READY);
+  }
+
+  _loading() {
+    const progress = document.createElement("progress");
+    progress.classList.add('progress', 'is-small', 'is-primary');
+    progress.max = 100;
+    progress.innerHTML = 0;
+
+    return progress;
+  }
+
+  _create(data) {
+    data.results.forEach((planet) => {
+      const box = document.createElement("div");
+      box.classList.add("box");
+      box.innerHTML = this._render({
+        name: planet.name,
+        terrain: planet.terrain,
+        population: planet.population,
+      });
+      document.body.querySelector(".main").appendChild(box);
+    })
+  }
+
+  _startLoading () {
+    const progressBar = this._loading();
+    document.body.querySelector(".main").appendChild(progressBar);
+  }
+
+  _stopLoading  () {
+    document.querySelector('progress').remove();
+  }
+
+   async _load(url) {
+    this._startLoading();
+
+    return new Promise((resolve, reject) => {
+      resolve(fetch(url));
+    }).then((data) => {
+      data.json().then(data => {
+        this._stopLoading();
+        this._create(data);
+      })
+    })
   }
 
   _render({ name, terrain, population }) {
     return `
-<article class="media">
-  <div class="media-left">
-    <figure class="image is-64x64">
-      <img src="${image}" alt="planet">
-    </figure>
-  </div>
-  <div class="media-content">
-    <div class="content">
-    <h4>${name}</h4>
-      <p>
-        <span class="tag">${terrain}</span> <span class="tag">${population}</span>
-        <br>
-      </p>
-    </div>
-  </div>
-</article>
+      <article class="media">
+        <div class="media-left">
+          <figure class="image is-64x64">
+            <img src="${image}" alt="planet">
+          </figure>
+        </div>
+        <div class="media-content">
+          <div class="content">
+          <h4>${name}</h4>
+            <p>
+              <span class="tag">${terrain}</span> <span class="tag">${population}</span>
+              <br>
+            </p>
+          </div>
+        </div>
+      </article>
     `;
   }
+
 }
+
+
+
