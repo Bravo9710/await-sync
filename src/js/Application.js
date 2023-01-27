@@ -19,6 +19,7 @@ export default class Application extends EventEmitter {
     progress.innerHTML = 0;
 
     this._loading = progress;
+
     this._load(this.url);
     this.emit(Application.events.READY);
   }
@@ -51,7 +52,7 @@ export default class Application extends EventEmitter {
   }
 
   _stopLoading  () {
-    document.querySelector('progress').remove();
+    document.querySelector('.progress').classList.add("hidden");
   }
 
    async _load(url) {
