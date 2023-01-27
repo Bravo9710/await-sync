@@ -52,7 +52,7 @@ export default class Application extends EventEmitter {
   }
 
   _stopLoading  () {
-    document.querySelector('.progress').classList.add("hidden");
+    document.querySelector('.progress').style.display = 'none';
   }
 
    async _load(url) {
